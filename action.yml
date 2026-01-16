@@ -1,0 +1,83 @@
+name: "Publish to Cloudflare Workers"
+description: "Build and deploy Cloudflare Workers using Wrangler"
+author: "tech@intellij.io"
+
+inputs:
+  node-version:
+    description: "Node.js version"
+    required: false
+    default: "20"
+
+  wrangler-version:
+    description: "Wrangler version (e.g. 4, 4.2.0)"
+    required: false
+    default: "latest"
+
+  working-directory:
+    description: "Working directory for npm/wrangler commands"
+    required: false
+    default: "."
+
+  install-command:
+    description: "Install command"
+    required: false
+    default: "npm ci"
+
+  build-command:
+    description: "Build command"
+    required: false
+    default: "npm run build --if-present"
+
+  deploy-command:
+    description: "Deploy command (wrangler deploy args can be appended here)"
+    required: false
+    default: "deploy"
+
+  cloudflare-api-token:
+    description: "Cloudflare API Token"
+    required: true
+
+  cloudflare-account-id:
+    description: "Cloudflare Account ID"
+    required: true
+
+  checkout:
+    description: "Whether to checkout repository"
+    required: false
+    default: "true"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      if: ${{ inputs.checkout == 'true' }}
+      uses: actions/checkout@v6
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: ${{ inputs.install-command }}
+
+    - name: Build (if present)
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: ${{ inputs.build-command }}
+
+    - name: Check wrangler version
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npx wrangler@${{ inputs.wrangler-version }} --version
+
+    - name: Publish to Cloudflare Workers
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ inputs.cloudflare-api-token }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ inputs.cloudflare-account-id }}
+        CF_ACCOUNT_ID: ${{ inputs.cloudflare-account-id }}
+      run: npx wrangler@${{ inputs.wrangler-version }} ${{ inputs.deploy-command }}
