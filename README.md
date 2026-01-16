@@ -30,6 +30,7 @@ jobs:
       - name: Deploy Workers
         uses: vscoding/cf-workers-publish-action@v1
         with:
+          checkout: true # checkout before installing deps
           cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare-account-id: ${{ secrets.CF_ACCOUNT_ID }}
 ```

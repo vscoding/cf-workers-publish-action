@@ -44,7 +44,7 @@ inputs:
   checkout:
     description: "Whether to checkout repository"
     required: false
-    default: "true"
+    default: "false"
 
 runs:
   using: "composite"
