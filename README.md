@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Workers
-        uses: your-org/cf-workers-publish-action@v1
+        uses: vscoding/cf-workers-publish-action@v1
         with:
           cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare-account-id: ${{ secrets.CF_ACCOUNT_ID }}
@@ -39,7 +39,7 @@ jobs:
 Example: deploy with env or specific config.
 
 ```yaml
-- uses: your-org/cf-workers-publish-action@v1
+- uses: vscoding/cf-workers-publish-action@v1
   with:
     cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     cloudflare-account-id: ${{ secrets.CF_ACCOUNT_ID }}
